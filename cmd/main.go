@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
-	_ "my-swagger/docs/echosimple" // you need to update github.com/rizalgowandy/go-swag-sample with your own project path
+	_ "my-swagger/docs" // you need to update github.com/rizalgowandy/go-swag-sample with your own project path
 )
 
 // @title Echo Swagger Example API
@@ -48,8 +48,12 @@ func main() {
 // @Accept */*
 // @Produce json
 // @Success 200 {object} map[string]interface{}
+// @response 400 {object} int
 // @Router / [get]
 func HealthCheck(c echo.Context) error {
+	return c.JSON(400, http.StatusBadRequest)
+	return c.JSON(404, http.NotFound)
+	return c.JSON(400, http.StatusInternalServerError)
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"data": "Server is up and running",
 	})

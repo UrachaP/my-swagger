@@ -26,6 +26,10 @@ paths:
           schema:
             additionalProperties: true
             type: object
+        "400":
+          description: Bad Request
+          schema:
+            type: integer
       summary: Show the status of server.
       tags:
       - root
