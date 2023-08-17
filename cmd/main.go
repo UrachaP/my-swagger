@@ -1,12 +1,11 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
 	_ "my-swagger/docs" // you need to update github.com/rizalgowandy/go-swag-sample with your own project path
+	"my-swagger/handler"
 )
 
 // @title Echo Swagger Example API
@@ -34,27 +33,11 @@ func main() {
 	e.Use(middleware.CORS())
 
 	// Routes
-	e.GET("/", HealthCheck)
+	e.GET("/healthcheck", handler.HealthCheckHandler)
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
+
+	e.POST("/upload", handler.UploadFile)
 
 	// Start server
 	e.Logger.Fatal(e.Start(":3000"))
-}
-
-// HealthCheck godoc
-// @Summary Show the status of server.
-// @Description get the status of server.
-// @Tags root
-// @Accept */*
-// @Produce json
-// @Success 200 {object} map[string]interface{}
-// @response 400 {object} int
-// @Router / [get]
-func HealthCheck(c echo.Context) error {
-	return c.JSON(400, http.StatusBadRequest)
-	return c.JSON(404, http.NotFound)
-	return c.JSON(400, http.StatusInternalServerError)
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"data": "Server is up and running",
-	})
 }
