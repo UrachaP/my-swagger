@@ -1,4 +1,36 @@
 basePath: /
+definitions:
+  handler.AuthRequest:
+    properties:
+      client_id:
+        type: string
+      client_secret:
+        type: string
+      grant_type:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  handler.AuthResponse:
+    properties:
+      access_token:
+        type: string
+      expires_in:
+        type: integer
+      refresh_token:
+        type: string
+      token_type:
+        type: string
+    type: object
+  handler.User:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
 host: localhost:3000
 info:
   contact:
@@ -13,26 +45,93 @@ info:
   title: Echo Swagger Example API
   version: "1.0"
 paths:
-  /:
-    get:
+  /authenticate:
+    post:
       consumes:
-      - '*/*'
-      description: get the status of server.
+      - application/json
+      parameters:
+      - description: Authentication request object
+        in: body
+        name: authRequest
+        required: true
+        schema:
+          $ref: '#/definitions/handler.AuthRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Bad Request
+            $ref: '#/definitions/handler.AuthResponse'
+      summary: Authenticate a user
+  /healthcheck:
+    get:
+      description: Health checking for the service
+      operationId: HealthCheckHandler
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
           schema:
-            type: integer
-      summary: Show the status of server.
-      tags:
-      - root
+            type: string
+      summary: Health Check
+  /upload:
+    post:
+      parameters:
+      - description: File to upload
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: File uploaded successfully
+          schema:
+            type: string
+      summary: Upload a file
+  /user:
+    get:
+      parameters:
+      - description: User ID
+        example: 123
+        in: query
+        name: id
+        required: true
+        type: integer
+      - description: User Name
+        example: jjj
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.User'
+      summary: Get a user by ID and name
+  /user/{id}:
+    get:
+      parameters:
+      - description: User ID
+        example: 1
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.User'
+      summary: Get a user by ID
 schemes:
 - http
 swagger: "2.0"
